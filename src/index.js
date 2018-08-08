@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-
 // import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -30,8 +29,7 @@ for (var x = 0; x < 4; x++){
         z++;
     }
 }
-const picture = '(varPicture)';
-console.log = (picture);
+const picture = varPicture;
 
 function CreateDeck(){
     var deck = [];
@@ -87,6 +85,7 @@ function distributeCard(hand) {
       hand[i] = deck[0];
       deck.shift();
     }
+    deck = newDeckGeneral;
     return hand;
 }
 
@@ -127,41 +126,48 @@ export class PrintDeck extends React.Component{
     }    
 };
 
-export class Hand extends React.Component{
+class NewCard extends React.Component{
+    render(){
+        return(
+            <div>
+                <img width="40" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfkzqDnXL_gZ2SsOZBxXd2Yh3IpJpTTorbiEqVBtgDgPZbnxHH" />
+                <p>{this.props.rank} of {this.props.suit}</p>
+            </div>
+        );
+    }
+}
+
+class Hand extends React.Component{
+    render(){
+        return(
+            <div>
+                {this.props.newCard.map((newCard) => <NewCard {...newCard} />)}
+            </div>
+        );
+    }
+}
+
+class GamePlay extends React.Component{
     render(){
         return(
             <div>
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-4">
-                            <ul> 
-                                {hand1.map((hand1, i) => <li key={i}>{hand1.picture} is{hand1.rank} of {hand1.suit}</li>)}
-                            </ul> 
+                            <Hand newCard={hand1}/>
                         </div>
                         <div className="col-sm-4">
-                            <ul> 
-                                {hand2.map((hand2, i) => <li key={i}>{hand2.rank} of {hand2.suit}</li>)}
-                            </ul>
+                            <Hand newCard={hand2}/>
                         </div>
                         <div className="col-sm-4">
-                            <ul> 
-                                {hand3.map((hand3, i) => <li key={i}>{hand3.rank} of {hand3.suit}</li>)}
-                            </ul>
+                            <Hand newCard={hand3}/>
                         </div>
                     </div>
-                </div>
-            </div>        
+                </div>    
+            </div>
         );
     }
-};
-
-const Pic = (props) => {
-    return(
-        <div>
-            {/* <img src={require("{deck[2].picture}")} alt="5 of Diamonds"/> */}
-        </div>
-    );
 }
 
-ReactDOM.render(<Hand />, document.getElementById('root'));
+ReactDOM.render(<GamePlay />, document.getElementById('root'));
 registerServiceWorker();
