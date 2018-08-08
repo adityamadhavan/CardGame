@@ -13,7 +13,7 @@ var newDeckGeneral = [], createDeckArray = [],  deck = [];
 var handWithDups1 = [], handWithDups2 = [], handWithDups3 = [];
 var hand1 = [], hand2 = [], hand3 = [];
 
-var card = {
+var newCard = {
     suit: this.suit,
     rank: this.rank,
     picture: this.picture
@@ -36,12 +36,12 @@ function CreateDeck(){
     var pictureIdx = 0;
     for (var suitIdx = 0; suitIdx < suit.length; suitIdx++) {
         for (var rankIdx = 0; rankIdx < rank.length; rankIdx++) {
-            card = {
+            newCard = {
                 suit: suit[suitIdx],
                 rank: rank[rankIdx],
                 picture: picture[pictureIdx]      
             };
-        deck.push(card);
+        deck.push(newCard);
         pictureIdx++;
         }
     }
@@ -64,19 +64,6 @@ function shuffleDeck(deck) {
 newDeckGeneral = shuffleDeck(createDeckArray);
 newDeckGeneral.pop();
 deck = newDeckGeneral;
-
-export class Card extends React.Component{
-    render(){
-        return(
-            <div>
-                {/* <img  /> */}
-                <ul>
-                    {newDeckGeneral.map((newDeckGeneral, i) => <li key={i}>{newDeckGeneral.rank} of {newDeckGeneral.suit}</li>)}
-                </ul>
-            </div>
-        );
-    }
-};
 
 // for( let i = 0; i < deck.length; i++){console.log(deck[i].picture);}
 
@@ -126,11 +113,11 @@ export class PrintDeck extends React.Component{
     }    
 };
 
-class NewCard extends React.Component{
+class Card extends React.Component{
     render(){
         return(
             <div>
-                <img width="40" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfkzqDnXL_gZ2SsOZBxXd2Yh3IpJpTTorbiEqVBtgDgPZbnxHH" />
+                <img width="30" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfkzqDnXL_gZ2SsOZBxXd2Yh3IpJpTTorbiEqVBtgDgPZbnxHH" />
                 <p>{this.props.rank} of {this.props.suit}</p>
             </div>
         );
@@ -141,7 +128,7 @@ class Hand extends React.Component{
     render(){
         return(
             <div>
-                {this.props.newCard.map((newCard) => <NewCard {...newCard} />)}
+                {this.props.card.map((card) => <Card {...card} />)}
             </div>
         );
     }
@@ -154,13 +141,13 @@ class GamePlay extends React.Component{
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-4">
-                            <Hand newCard={hand1}/>
+                            <Hand card={hand1}/>
                         </div>
                         <div className="col-sm-4">
-                            <Hand newCard={hand2}/>
+                            <Hand card={hand2}/>
                         </div>
                         <div className="col-sm-4">
-                            <Hand newCard={hand3}/>
+                            <Hand card={hand3}/>
                         </div>
                     </div>
                 </div>    
