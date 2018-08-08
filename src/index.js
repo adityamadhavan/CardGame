@@ -72,9 +72,9 @@ function distributeCard(hand) {
       hand[i] = deck[0];
       deck.shift();
     }
-    deck = newDeckGeneral;
     return hand;
 }
+deck = newDeckGeneral;
 
 handWithDups1 = distributeCard(handWithDups1);  
 handWithDups2 = distributeCard(handWithDups2);
@@ -100,18 +100,32 @@ hand1 = duplicate(handWithDups1); //Duplicates removed
 hand2 = duplicate(handWithDups2); //Duplicates removed  
 hand3 = duplicate(handWithDups3); //Duplicates removed
 
+function turn(handA, handB) { //Turn
+    let x = Math.trunc(Math.random() * handB.length);
+    let a = handB[x];
+    console.log("Selected Card")
+    console.log(handB[x]);
+    handA.push(a);
+    handB.splice(x, 1);
+    handA = duplicate(handA);
+    console.log("Hand taken by");
+    for (var i = 0; i < handA.length; i++) {
+      console.log(handA[i]);
+    }
+    console.log("Hand taken from");
+    for (var i = 0; i < handB.length; i++) {
+      console.log(handB[i]);
+    }
+    return handA;
+}
 
-export class PrintDeck extends React.Component{
-    render(){
-        return(
-            <div>
-                <ul> 
-                    {deck.map((deck, i) => <li key={i}>{deck.picture}</li>)}
-                </ul> 
-            </div>       
-        );
-    }    
-};
+const Turn = () => {
+    return(
+        <div>
+            ...
+        </div>    
+    );
+}
 
 class Card extends React.Component{
     render(){
@@ -134,14 +148,17 @@ class Hand extends React.Component{
     }
 }
 
-class GamePlay extends React.Component{
+class Board extends React.Component{
     render(){
         return(
             <div>
+                <h1>Welcome to Old Boy</h1>
+                <button onClick={() => alert('Refresh Page to Start New Game')}>New Game</button>
+                <hr/>
                 <div className="container">
                     <div className="row">
                         <div className="col-sm-4">
-                            <Hand card={hand1}/>
+                        <Hand card={hand1}/>
                         </div>
                         <div className="col-sm-4">
                             <Hand card={hand2}/>
@@ -156,5 +173,5 @@ class GamePlay extends React.Component{
     }
 }
 
-ReactDOM.render(<GamePlay />, document.getElementById('root'));
+ReactDOM.render(<Board />, document.getElementById('root'));
 registerServiceWorker();
