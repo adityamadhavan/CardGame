@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './index.css';
 import Hand from './Hand.js';
 
 const suit = ["Spades", "Diamonds", "Hearts", "Clubs"];
 const rank = [2,3,4,5,6,7,8,9,10,11,12,13,100];
-var z = 0, l = null;
+var z = 0;
 var varPicture = [];
 var newDeckGeneral = [], createDeckArray = [],  deck = [];
 var initHand1 = [], initHand2 = [], initHand3 = [];
-var hand1 = [], hand2 = [], hand3 = [];
+var discard = [];
 
 var newCard = {
     suit: this.suit,
@@ -75,8 +74,6 @@ initHand1 = distributeCard(initHand1);
 initHand2 = distributeCard(initHand2);
 initHand3 = distributeCard(initHand3); 
 
-console.log(initHand1);
-
 function Player1Loses(){
     return(
         <h4>Player 1 Loses</h4>
@@ -101,35 +98,39 @@ class Board extends React.Component{
         this.state = {
             hand1: initHand1,
             hand2: initHand2,
-            hand3: initHand3
+            hand3: initHand3,
+            hand4: []
         };
     }
 
 
     duplicateFilter() {
-        this.setState({hand1: this.duplicate(this.state.hand1), 
-                       hand2: this.duplicate(this.state.hand2),
-                       hand3: this.duplicate(this.state.hand3)
+        this.setState({hand1: this.duplicate(this.state.hand1, this.state.hand4),  
+                       hand2: this.duplicate(this.state.hand2, this.state.hand4),
+                       hand3: this.duplicate(this.state.hand3, this.state.hand4)
         });
        
     }
 
-    duplicate(hand) {
-        for (var i = 0; i < hand.length; i++) {
-            for (var j = i + 1; j < hand.length; j++) {
-              if (hand[i].rank === hand[j].rank) {
-                hand.splice(i, 1);
-                hand.splice(j - 1, 1);
+    duplicate(handA, handB) {
+        for (var i = 0; i < handA.length; i++) {
+            for (var j = i + 1; j < handA.length; j++) {
+              if (handA[i].rank === handA[j].rank) { 
+                handB.reverse();
+                handB.push(handA[i]);
+                handB.push(handA[j]);  
+                handA.splice(i, 1);
+                handA.splice(j - 1, 1);
                 j = i;
+                handB.reverse();
               }
             }
-          }
-
-       return hand;
+          }  
+       return handA;
     }
 
     Button1() {
-        this.setState({hand1: this.PlayComp(this.state.hand1, this.state.hand2, this.state.hand3)});
+        this.setState({hand1: this.PlayComp(this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4)});
     }
 
     Button2() {
@@ -137,7 +138,7 @@ class Board extends React.Component{
     }
 
     Button3() {
-        this.setState({hand3: this.PlayComp(this.state.hand3, this.state.hand1, this.state.hand2)});
+        this.setState({hand3: this.PlayComp(this.state.hand3, this.state.hand1, this.state.hand2, this.state.hand4)});
     }
 
     PlayPlayer(handA, handB, handC) { //Turn
@@ -151,20 +152,20 @@ class Board extends React.Component{
             handB.splice(x, 1);
         }
         else if(handB.length === 0 && handC.length !== 0){
-            let a = handC[x];
+            let a = handC[y];
             console.log("Selected Card")
-            console.log(handB[x]);
+            console.log(handC[y]);
             handA.push(a);
-            handC.splice(x, 1);
+            handC.splice(y, 1);
         }
         else{}
         return handA;
     }
 
 
-    PlayComp(handA, handB, handC) {
+    PlayComp(handA, handB, handC, handD) {
         let a = this.PlayPlayer(handA, handB, handC);
-        let b = this.duplicate(a);
+        let b = this.duplicate(a, handD);
         return b;
     }
 
@@ -207,24 +208,38 @@ class Board extends React.Component{
                     </div>
                     <hr/>
                     <div className="row">
-                        <div align="center" className="col-sm-12">
-                                <div><Hand card={this.state.hand1} {...this.state.hand1.picture="./cards/png/back.png"} /></div>
+                        <div className="col-sm-9">
+                            <div className="row">
+                                <div align="center" className="col-sm-12">
+                                    <div><Hand card={this.state.hand1}/></div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div className="row">    
+                                <div align="center" className="col-sm-12">  
+                                    <div><Hand card={this.state.hand2}/></div>                     
+                                </div>
+                            </div>
+                            <hr/> 
+                            <div className="row">    
+                                <div align="center" className="col-sm-12">
+                                    <div className="e" padding="30"><Hand card={this.state.hand3}/></div>
+                                </div>
+                            </div>  
+                            <hr/>  
+                            
+                        </div>
+                        <div className="col-sm-3">
+                            <div className="row">    
+                                <div align="center" className="col-sm-12">  
+
+                                    <div><Hand card={this.state.hand4}/></div>                     
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <hr/>
-                    <div className="row">    
-                        <div align="center" className="col-sm-12">  
-                            <div><Hand card={this.state.hand2}/></div>                     
-                        </div>
-                    </div>
-                    <hr/> 
-                    <div className="row">    
-                        <div align="center" className="col-sm-12">
-                            <div className="e" padding="30"><Hand card={this.state.hand3}/></div>
-                        </div>
-                    </div>  
-                    <hr/>  
-                        <div>{loser}</div>
+                    
+                    <div>{loser}</div>
                 </div>    
             </div>
         );
