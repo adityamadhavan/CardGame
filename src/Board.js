@@ -8,12 +8,13 @@ var z = 0;
 var varPicture = [];
 var newDeckGeneral = [], createDeckArray = [],  deck = [];
 var initHand1 = [], initHand2 = [], initHand3 = [];
-var discard = [];
+let loser = 5;
 
 var newCard = {
     suit: this.suit,
     rank: this.rank,
-    picture: this.picture
+    picture: this.picture,
+    name: this.name
 };
 
 function pic(x, y){
@@ -36,7 +37,8 @@ function CreateDeck(){
             newCard = {
                 suit: suit[suitIdx],
                 rank: rank[rankIdx],
-                picture: picture[pictureIdx]      
+                picture: picture[pictureIdx],  
+                name: rank[rankIdx] + "of" + suit[suitIdx]    
             };
         deck.push(newCard);
         pictureIdx++;
@@ -74,24 +76,6 @@ initHand1 = distributeCard(initHand1);
 initHand2 = distributeCard(initHand2);
 initHand3 = distributeCard(initHand3); 
 
-function Player1Loses(){
-    return(
-        <h4>Player 1 Loses</h4>
-    );
-}
-
-function Player2Loses(){
-    return(
-        <h4>Player 2 Loses</h4>
-    );
-}
-
-function Player3Loses(){
-    return(
-        <h4>Player 3 Loses</h4>
-    );
-}
-
 class Board extends React.Component{
     constructor(props){
         super(props);
@@ -99,26 +83,38 @@ class Board extends React.Component{
             hand1: initHand1,
             hand2: initHand2,
             hand3: initHand3,
-            hand4: []
+            hand4: [],
+            message: [],
+            loser: []
         };
     }
 
-
-    duplicateFilter() {
-        this.setState({hand1: this.duplicate(this.state.hand1, this.state.hand4),  
-                       hand2: this.duplicate(this.state.hand2, this.state.hand4),
-                       hand3: this.duplicate(this.state.hand3, this.state.hand4)
+    newGame() {
+        this.setState({
+            hand1: initHand1,
+            hand2: initHand2,
+            hand3: initHand3,
+            hand4: [],
+            
         });
-       
     }
 
-    duplicate(handA, handB) {
+    duplicateFilter() {
+        this.setState({hand1: this.duplicate(this.state.hand1, this.state.hand4, this.state.message),  
+                       hand2: this.duplicate(this.state.hand2, this.state.hand4, this.state.message),
+                       hand3: this.duplicate(this.state.hand3, this.state.hand4, this.state.message)
+        });    
+    }
+
+    duplicate(handA, handB, c) {
         for (var i = 0; i < handA.length; i++) {
             for (var j = i + 1; j < handA.length; j++) {
               if (handA[i].rank === handA[j].rank) { 
                 handB.reverse();
                 handB.push(handA[i]);
                 handB.push(handA[j]);  
+                c = "Player discarded a pair of" + handA[i].rank+"s";
+                console.log(c);
                 handA.splice(i, 1);
                 handA.splice(j - 1, 1);
                 j = i;
@@ -130,7 +126,7 @@ class Board extends React.Component{
     }
 
     Button1() {
-        this.setState({hand1: this.PlayComp(this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4)});
+        this.setState({hand1: this.PlayComp(this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4, this.state.message)});
     }
 
     Button2() {
@@ -138,7 +134,7 @@ class Board extends React.Component{
     }
 
     Button3() {
-        this.setState({hand3: this.PlayComp(this.state.hand3, this.state.hand1, this.state.hand2, this.state.hand4)});
+        this.setState({hand3: this.PlayComp(this.state.hand3, this.state.hand1, this.state.hand2, this.state.hand4, this.state.message)});
     }
 
     PlayPlayer(handA, handB, handC) { //Turn
@@ -163,20 +159,27 @@ class Board extends React.Component{
     }
 
 
-    PlayComp(handA, handB, handC, handD) {
+    PlayComp(handA, handB, handC, handD, c) {
         let a = this.PlayPlayer(handA, handB, handC);
-        let b = this.duplicate(a, handD);
+        let b = this.duplicate(a, handD, c);
         return b;
     }
 
+    GetLoser(hand1, hand2, hand3) {
+        if  (hand1.length !== 0 && hand2.length === 0 && hand3.length === 0)
+        {loser = 0}
+    else if (hand2.length !== 0 && hand3.length === 0 && hand1.length === 0)
+        {loser = 1}
+    else if (hand3.length !== 0 && hand1.length === 0 && hand2.length === 0)
+        {loser = 2}
+        return loser; 
+    }
+    
+    Loser(){
+        this.setState({loser: this.GetLoser(this.state.hand1, this.state.hand2, this.state.hand3)});
+    }
+    
     render(){
-        let loser = null;
-        if (this.state.hand1 !== 0 && this.state.hand2 === 0 && this.state.hand3 === 0)
-        {loser = <Player1Loses />;}
-        else if (this.state.hand2 !== 0 && this.state.hand3 === 0 && this.state.hand1 === 0)
-        {loser = <Player2Loses />;}
-        else if (this.state.hand3 !== 0 && this.state.hand1 === 0 && this.state.hand2 === 0)
-        {loser = <Player3Loses />;}
         
         return(
             <div>
@@ -185,7 +188,7 @@ class Board extends React.Component{
                     <div className="row" >
                         <div className="col-sm-2"></div>
                         <div align="center" className="col-sm-4">
-                            <button onClick={() => alert('Pls Refresh this bloody page')}>New Game</button>
+                            <button onClick={this.newGame.bind(this)}>New Game</button>
                         </div>
                         <div align="center" className="col-sm-4">
                         <button onClick={this.duplicateFilter.bind(this)}>Remove Duplicates</button>
@@ -226,7 +229,17 @@ class Board extends React.Component{
                                     <div className="e" padding="30"><Hand card={this.state.hand3}/></div>
                                 </div>
                             </div>  
-                            <hr/>  
+                            <hr/> 
+                            <div className="row">    
+                                <div align="center" className="col-sm-12">
+                                    <div><h1>{`${this.state.message}`}</h1></div>
+                                </div>
+                            </div>
+                            <div className="row">    
+                                <div align="center" className="col-sm-12">
+                                    <div><h3 {...this.Loser.bind(this)}></h3></div>
+                                </div>
+                            </div>  
                             
                         </div>
                         <div className="col-sm-3">
@@ -238,8 +251,6 @@ class Board extends React.Component{
                             </div>
                         </div>
                     </div>
-                    
-                    <div>{loser}</div>
                 </div>    
             </div>
         );
