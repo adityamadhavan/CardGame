@@ -6,7 +6,7 @@ class Hand extends React.Component{
 
     render(){
         return(
-            <div>
+            <div display="table">
                 <ul className="list-inline">
                     {this.props.card.map((card, i) => <li key={i} className="list-inline-item"><Card  {...card} /> </li>)}
                 </ul>

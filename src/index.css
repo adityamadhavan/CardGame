@@ -4,6 +4,10 @@ body {
   font-family: sans-serif;
 }
 
+.btn-outline-primary{
+  border-color: transparent;
+}
+
 .buttontran{
     transition-duration: 0.4s;
 }
@@ -19,4 +23,27 @@ body {
 .e:hover{
   background-color: rgb(139, 175, 155); /* Green */
     color: black;
+}
+
+.stack{
+  display: inline-flex;
+  position: relative;
+}
+
+.rest{
+  margin-left: -102px;
+}
+
+.cards {
+  display: table;
+  table-layout: fixed;
+  width: 50%;
+  max-width: 700px;
+}
+.cardscell {
+  display: table-cell;
+  width: 100px;
+}
+.cards > div > img {
+  display: block;
 }
