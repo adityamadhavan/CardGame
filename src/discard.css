@@ -1,0 +1,3 @@
+disc:nth-child(n+5){
+    visibility: hidden;
+}

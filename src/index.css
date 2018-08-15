@@ -25,25 +25,14 @@ body {
     color: black;
 }
 
-.stack{
-  display: inline-flex;
-  position: relative;
+.card{
+  display: table-cell;
+  background-color: transparent;
+  border: none;
 }
 
-.rest{
-  margin-left: -102px;
-}
-
-.cards {
+.card-container{
   display: table;
   table-layout: fixed;
-  width: 50%;
-  max-width: 700px;
-}
-.cardscell {
-  display: table-cell;
-  width: 100px;
-}
-.cards > div > img {
-  display: block;
+  width: 80%
 }

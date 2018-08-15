@@ -1,6 +1,7 @@
 import React from 'react';
 import './index.css';
 import Hand from './Hand.js';
+import Discard from './Discard.js';
 
 const suit = ["Spades", "Diamonds", "Hearts", "Clubs"];
 const rank = [2,3,4,5,6,7,8,9,10,11,12,13,100];
@@ -143,9 +144,12 @@ class Board extends React.Component{
        return handA;
     }
 
-    PlayPlayer(handA, handB, handC) { 
+    PlayPlayer(handA, handB, handC, hanD) { 
+        
         let x = Math.trunc(Math.random() * handB.length);
         let y = Math.trunc(Math.random() * handC.length);
+        
+        
         if(handB.length !== 0){
             let a = handB[x];
             a.isFaceUp = true;
@@ -163,7 +167,9 @@ class Board extends React.Component{
     }
 
     PlayComp(handA, handB, handC, handD) {
-        let a = this.PlayPlayer(handA, handB, handC);
+
+
+        let a = this.PlayPlayer(handA, handB, handC, handD);
         for(var i = 0; i < a.length; i++){
             a[i].isFaceUp = false;
         }
@@ -185,7 +191,7 @@ class Board extends React.Component{
 
     Button2() {
         this.setState({hand2: 
-            this.PlayPlayer(this.state.hand2, this.state.hand3, this.state.hand1),
+            this.PlayPlayer(this.state.hand2, this.state.hand3, this.state.hand1, this.state.hand4),
             loser: this.state.hand2.length === 1 
                 && this.state.hand3.length === 0 
                 && this.state.hand1.length === 0 ? 'player 2 is the Loser': 'Game Progresses',
@@ -263,8 +269,8 @@ class Board extends React.Component{
                                         onClick={this.Button3.bind(this)}>Continue to Player 3's Turn</button>
                                 </div>  
                                 <div align="center" className="col-sm-10">
-                                    <div className="e" padding="30"><h6>Player 3</h6>
-                                    <Hand card={this.state.hand3}/></div>
+                                    <div padding="30"><h6>Player 3</h6>
+                                    <Hand className="e" card={this.state.hand3}/></div>
                                 </div>
                             </div>  
                             <hr/>  
@@ -274,7 +280,7 @@ class Board extends React.Component{
                                 <div align="center" className="col-sm-12">  
 
                                     <div><h4>The top 2 cards were discarded in the last turn</h4>
-                                    <Hand card={this.state.hand4}/></div>                     
+                                    <Discard card={this.state.hand4}/></div>                     
                                 </div>
                             </div>
                         </div>
