@@ -50,11 +50,11 @@ function shuffleDeck(deck) {
       deck[swapIdx] = deck[i];
       deck[i] = tmp;
     }
+    deck.pop();
     return deck;
 }
   
 newDeckGeneral = shuffleDeck(createDeckArray);
-newDeckGeneral.pop();
 deck = newDeckGeneral;
 
 function distributeCard(hand, isFaceUp) {
@@ -63,6 +63,7 @@ function distributeCard(hand, isFaceUp) {
       hand[i]['isFaceUp'] = isFaceUp;
       deck.shift();
     }
+    
     return hand;
 }
 
@@ -70,26 +71,39 @@ initHand1 = distributeCard(initHand1, false);
 initHand2 = distributeCard(initHand2, true);
 initHand3 = distributeCard(initHand3, false);
 
+const initialState = {
+    createDeckArray: CreateDeck(),
+    deck: newDeckGeneral,
+    hand1: initHand1,
+    hand2: initHand2,
+    hand3: initHand3,
+    hand4: [],
+    loser: "Game On!",
+    flag: [1,0,0],
+    cnt: 0
+}
+
+
 class Board extends React.Component{
 
     constructor(props){
         super(props);
-        this.state = {
-            hand1: initHand1,
-            hand2: initHand2,
-            hand3: initHand3,
-            hand4: [],
-            loser: "Game On!",
-            flag: [1,0,0],
-            cnt: 0
-        };
+        // this.initialState = {
+        //     hand1: initHand1,
+        //     hand2: initHand2,
+        //     hand3: initHand3,
+        //     hand4: [],
+        //     loser: "Game On!",
+        //     flag: [1,0,0],
+        //     cnt: 0
+        // };
 
-        this.reset = this.state;
+        this.state = initialState;
 }  
 
     NewGame(){
         this.setState(
-            ...this.reset,
+            initialState,
             {cnt: this.CountFun(this.state.cnt)}
         );
     }
