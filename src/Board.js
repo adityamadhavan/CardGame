@@ -8,7 +8,7 @@ const rank = [2,3,4,5,6,7,8,9,10,11,12,13,100];
 var z = 0;
 var varPicture = [];
 var newDeckGeneral = [], createDeckArray = [],  deck = [];
-var initHand1 = [], initHand2 = [], initHand3 = [];
+var initHand1 = [], initHand2 = [], initHand3 = [], initHand5 = [];
 
 function pic(x, y){
     return("./cards/png/" + x + "/" + y + ".png");}
@@ -66,19 +66,9 @@ function distributeCard(hand, isFaceUp) {
     return hand;
 }
 
-
 initHand1 = distributeCard(initHand1, false); 
 initHand2 = distributeCard(initHand2, true);
 initHand3 = distributeCard(initHand3, false);
-
-let resetHand1 = initHand1;
-let resetHand2 = initHand2; 
-let resetHand3 = initHand3;  
-
-console.log(resetHand1);
-console.log(initHand1);
-
-
 
 class Board extends React.Component{
 
@@ -93,6 +83,8 @@ class Board extends React.Component{
             flag: [1,0,0],
             cnt: 0
         };
+
+        this.reset = this.state;
 }  
 
     NewGame(){
@@ -280,7 +272,7 @@ class Board extends React.Component{
                                 <div align="center" className="col-sm-12"> 
                                     <div><h4>The top 2 cards were discarded in the last turn</h4>
                                     <Discard card={this.state.hand4}/></div>
-
+                                              
                                 </div>
                             </div>
                         </div>
