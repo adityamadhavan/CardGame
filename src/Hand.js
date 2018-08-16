@@ -11,6 +11,7 @@ class Hand extends React.Component{
                 <li key={i} className="list-inline-item card"><Card  {...card} /> </li>)}
             </ul>
             
+            
         );
     }
 }

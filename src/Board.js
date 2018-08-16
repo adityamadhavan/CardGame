@@ -93,16 +93,6 @@ class Board extends React.Component{
             flag: [1,0,0],
             cnt: 0
         };
-        this.reset = 
-        {
-            hand1: resetHand1,
-            hand2: resetHand2,
-            hand3: resetHand3,
-            hand4: [],
-            loser: "Shit!",
-            flag: [1,0,0],
-            cnt: 0
-    };
 }  
 
     NewGame(){
@@ -120,8 +110,8 @@ class Board extends React.Component{
     duplicateFilter() {
         this.setState({hand1: this.duplicate(this.state.hand1, this.state.hand4),  
                        hand2: this.duplicate(this.state.hand2, this.state.hand4),
-                       hand3: this.duplicate(this.state.hand3, this.state.hand4)
-        });    
+                       hand3: this.duplicate(this.state.hand3, this.state.hand4),
+                    });    
     }
 
     duplicate(handA, handB) {
@@ -141,10 +131,11 @@ class Board extends React.Component{
           for(i = 0; i < handB.length; i++){
             handB[i].isFaceUp = true;
         }   
+        
        return handA;
     }
 
-    PlayPlayer(handA, handB, handC, hanD) { 
+    PlayPlayer(handA, handB, handC, handD) { 
         
         let x = Math.trunc(Math.random() * handB.length);
         let y = Math.trunc(Math.random() * handC.length);
@@ -163,6 +154,7 @@ class Board extends React.Component{
             handC.splice(y, 1);
         }
         else{}
+
         return handA;
     }
 
@@ -174,39 +166,54 @@ class Board extends React.Component{
             a[i].isFaceUp = false;
         }
         let b = this.duplicate(a, handD);
+
         return b;
     }
     
     
     Button1() 
     {
-        this.setState({hand1: 
-            this.PlayComp(this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4),
-            loser: this.state.hand1.length === 1 
-                && this.state.hand2.length === 0 
-                && this.state.hand3.length === 0 ? 'player 1 is the Loser': 'Game Progresses',
+        this.setState({
+            hand1: this.PlayComp(
+                this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4, this.state.loser),
+            loser: this.GetLoser(
+                this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4, this.state.loser),
             flag: this.state.hand2.length === 0 ? [0,0,1 ] : [0,1,0]
             });
     }
 
     Button2() {
-        this.setState({hand2: 
-            this.PlayPlayer(this.state.hand2, this.state.hand3, this.state.hand1, this.state.hand4),
-            loser: this.state.hand2.length === 1 
-                && this.state.hand3.length === 0 
-                && this.state.hand1.length === 0 ? 'player 2 is the Loser': 'Game Progresses',
+        this.setState({
+            hand2: this.PlayPlayer(
+                this.state.hand2, this.state.hand3, this.state.hand1, this.state.hand4, this.state.loser),
+            loser: this.GetLoser(
+                this.state.hand2, this.state.hand3, this.state.hand1, this.state.hand4, this.state.loser),
+            
             flag: this.state.hand3.length === 0 ? [1,0,0] : [0,0,1]
             });
     }
 
     Button3() {
-        this.setState({hand3: 
-            this.PlayComp(this.state.hand3, this.state.hand1, this.state.hand2, this.state.hand4),
-            loser: this.state.hand3.length === 1
-                && this.state.hand1.length === 0 
-                && this.state.hand2.length === 0 ? 'player 3 is the Loser': 'Game Progresses',
+        this.setState({
+            hand3: this.PlayComp(
+                this.state.hand3, this.state.hand1, this.state.hand2, this.state.hand4, this.state.loser),
+            loser: 
+            this.GetLoser(
+                this.state.hand1, this.state.hand2, this.state.hand3, this.state.hand4, this.state.loser),
             flag: this.state.hand3.length === 0 ? [0,1,0] : [1,0,0]
             });
+    }
+
+    GetLoser(handA, handB, handC, loser)
+    {
+        if((handA.length === 1 || handA.length === 3) && handB.length === 0 && handC.length === 0)
+        {loser = "Player 1 is the loser"}
+        else if((handB.length === 1 || handB.length === 3) && handC.length === 0 && handA.length === 0)
+        {loser = "Player 2 is the loser"}
+        else if((handC.length === 1 || handC.length === 3) && handA.length === 0 && handB.length === 0)
+        {loser = "Player 3 is the loser"}
+        else{loser = "Game progresses"}
+        return loser;
     }
     
     render(){
@@ -215,15 +222,12 @@ class Board extends React.Component{
             <div>
                 <h1 align="center">Welcome to Old Boy</h1>
                 <div className="container">
-                    <div className="row" >
-                        <div align="center" className="col-sm-4">
+                    <div className="row">
+                        <div align="center" className="col-sm-4 topbuttons">
                             <button onClick={this.NewGame.bind(this)}>New Game</button>
                             <div><h6>{this.CountFun(this.state.cnt)}</h6></div>
-                            
-                            {console.log(this.reset)}
-                            {console.log(resetHand1)}
                         </div>
-                        <div align="center" className="col-sm-4">
+                        <div align="center" className="col-sm-4 topbuttons">
                         <button onClick={this.duplicateFilter.bind(this)}>Remove Duplicates</button>
                         </div>
                         <div className="col-sm-4">
@@ -231,26 +235,24 @@ class Board extends React.Component{
                         </div>    
                     </div>
                 </div>
-                <hr/>
                 <div className="container">
                     <div className="row">      
                         <div className="col-sm-8">
                             <div className="row">
                                 <div className="col-sm-2">
-                                    <button padding="20" vertical-align="center"
+                                    <button className="compbutton"
                                         disabled={this.state.flag[0] !== 1 || this.state.hand1.length === 0 || 
                                         (this.state.hand2.length === 0 && this.state.hand3.length === 0)} 
                                         onClick={this.Button1.bind(this)}>Continue to Player 1's Turn</button>
                                 </div>  
                                 <div align="center" className="col-sm-10">
-                                    <div><h6>Player 1</h6>
+                                    <div ><h6>Player 1</h6>
                                     <Hand card={this.state.hand1}/></div>
                                 </div>
                             </div>
-                            <hr/>
                             <div className="row"> 
                                 <div className="col-sm-2">
-                                    <button padding="20" 
+                                    <button id="play"  
                                         disabled={this.state.flag[1] !== 1 || (this.state.hand2.length === 0 || 
                                         (this.state.hand3.length === 0 && this.state.hand1.length === 0))} 
                                         onClick={this.Button2.bind(this)}>Play</button>
@@ -259,11 +261,10 @@ class Board extends React.Component{
                                     <div><h6>Player 2</h6>
                                     <Hand card={this.state.hand2}/></div>                     
                                 </div>
-                            </div>
-                            <hr/> 
+                            </div>                            
                             <div className="row">  
                                 <div className="col-sm-2">
-                                    <button padding="20" 
+                                    <button className="compbutton" 
                                         disabled={this.state.flag[2] !== 1 || (this.state.hand3.length === 0 ||
                                         (this.state.hand1.length === 0 && this.state.hand2.length === 0))} 
                                         onClick={this.Button3.bind(this)}>Continue to Player 3's Turn</button>
@@ -273,14 +274,13 @@ class Board extends React.Component{
                                     <Hand className="e" card={this.state.hand3}/></div>
                                 </div>
                             </div>  
-                            <hr/>  
                         </div>
                         <div className="col-sm-3">
                             <div className="row">    
-                                <div align="center" className="col-sm-12">  
-
+                                <div align="center" className="col-sm-12"> 
                                     <div><h4>The top 2 cards were discarded in the last turn</h4>
-                                    <Discard card={this.state.hand4}/></div>                     
+                                    <Discard card={this.state.hand4}/></div>
+
                                 </div>
                             </div>
                         </div>
