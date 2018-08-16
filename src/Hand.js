@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './index.css';
 import Card from './Card.js';
 
 class Hand extends React.Component{
